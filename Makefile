@@ -4,4 +4,5 @@ all:
 run: 
 	./graph-tests
 	./bpq-tests
+
 try: all run
