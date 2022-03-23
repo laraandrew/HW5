@@ -43,4 +43,8 @@ class Graph{
 	private:
 		// Your code goes here!
 
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> f507468e780b6768b11bd462f92e03620db82623
