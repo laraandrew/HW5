@@ -12,7 +12,7 @@ struct GraphNode {
 
 struct GraphEdge {
 	GraphNode *from;
-	GraphNode *to;	
+	GraphNode *to;
 	unsigned int weight;
 };
 
