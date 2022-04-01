@@ -6,6 +6,7 @@
         "type_traits": "cpp",
         "vector": "cpp",
         "iosfwd": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "functional": "cpp"
     }
 }

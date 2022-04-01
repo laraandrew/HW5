@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <queue>
 #include "Graph.h"
 
 using namespace std;
@@ -22,7 +23,7 @@ struct DNode {
     }
 };
 
-class BetterPriorityQueue{
+class BetterPriorityQueue : public priority_queue<DNode, vector<DNode>, greater<DNode> >::priority_queue{
     private: 
         vector<DNode> c;
     
@@ -31,7 +32,6 @@ class BetterPriorityQueue{
      */
     bool Contains(DNode n){
         if (c.size() == 0) return false;
-            
         for (unsigned int i = 0; i < c.size(); i++){
             if (c.at(i).node == n.node) return true;
         }

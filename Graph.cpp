@@ -7,6 +7,9 @@
 
 using namespace std;
 
+//g++ -Wall Graph.cpp -o graph-tests
+//./graph-tests
+
 /**
  * Deconstructor function responsible for memory leaks when exiting the program
  */
