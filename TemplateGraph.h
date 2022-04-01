@@ -41,6 +41,9 @@ class Graph{
 		size_t Order() const; // the number of nodes
 
 	private:
-		// Your code goes here!
+        vector<GraphNode*> vectNodes;
+        vector<GraphEdge*> vectEdges;
+		vector<vector<GraphEdge*> > vectAdj;
+
 
 };
