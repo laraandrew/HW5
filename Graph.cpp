@@ -8,7 +8,7 @@
 using namespace std;
 
 /**
- * destructor clears up memory leaks
+ * Deconstructor function responsible for memory leaks when exiting the program
  */
 Graph::~Graph(){
 
@@ -25,96 +25,78 @@ Graph::~Graph(){
 }
 
 /**
- * function adds node to the graph
- * @param key key of the node
- * @param data data of the node
- * @return node that was added to the graph
+ * This function creates a new node using the parameters of: key and data 
+ * Adds this new node to the vector of nodes
  */ 	
 GraphNode *Graph::AddNode(char key, int data){
-	GraphNode *vertex = new GraphNode;
-	bool keyPresent = false;
-	unsigned int idx = 0;
+	GraphNode *node = new GraphNode;
+	node->key = key;
+	node->data = data;
+
+	bool keyInUse = false;
+	unsigned int index = 0;
 	
-	vertex->key = key;
-	vertex->data = data;
 	
 	if (vectNodes.size() > 0){
-		if (vectNodes.size() == 1){
-			if (vectNodes.at(0)->key == key){
-				keyPresent = true;
-			}
-		}
+		if (vectNodes.size() == 1 && vectNodes.at(0)->key == key) keyInUse = true; // if the key is found in the 
 		else {
-			while (idx < vectNodes.size()){
-				if (vectNodes.at(idx)->key == key){
-					keyPresent = true;
+			while (index < vectNodes.size()){ // iterate through the node Vector to see if the key is already in use
+				if (vectNodes.at(index)->key == key){
+					keyInUse = true;
 					break;
 				}
-				idx += 1;
+				index++;
 			}
 		}
-		if (!keyPresent){
-			vectNodes.push_back(vertex);
-		} 
+		if (!keyInUse) vectNodes.push_back(node);
 		else {
-			delete vertex;
-			throw invalid_argument("key is already present");
+			delete node;
+			throw invalid_argument("Key is in use");
 		}
 	}
-	else {
-		vectNodes.push_back(vertex);
-	} 
+	else vectNodes.push_back(node); //pushes node into the node vector if its an empty vector
 	
-	return vertex;
-	delete vertex;
+	return node;
+	delete node;
 }
 
 /**
- * function adds edge to the graph
- * @param gn1 node from
- * @param gn2 node to
- * @param weight weight of the edge
- * @return edge that was added to the graph
+ * This function takes in a "FromNode", "ToNode" and the weight of the edge
  */ 
-GraphEdge *Graph::AddEdge(GraphNode *gn1, GraphNode *gn2, unsigned int weight){
+GraphEdge *Graph::AddEdge(GraphNode *FromNode, GraphNode *ToNode, unsigned int weight){
 	GraphEdge *edge = new GraphEdge;
-	unsigned int idx = 0;
-	int numNodePresent = 0;
-	bool edgeExisting = false;
-	
-	edge->from = gn1;
-	edge->to = gn2;
+	edge->from = FromNode;
+	edge->to = ToNode;
 	edge->weight = weight;
+	//edge is now declared and initialized
+
+	unsigned int index = 0;
+	int numNodePresent = 0;
+	bool edgeFound = false;
 	
-	while (idx < vectNodes.size()){
-		if (vectNodes.at(idx)->key == gn1->key || vectNodes.at(idx)->key == gn2->key){
-			numNodePresent += 1;
-		}
-		if (numNodePresent == 2){
-			break;
-		}
-		idx += 1;
+	
+	while (index < vectNodes.size()){
+		if (vectNodes.at(index)->key == FromNode->key || vectNodes.at(index)->key == ToNode->key) numNodePresent++; 
+		if (numNodePresent == 2) break; // break once both nodes are found as expressed above
+		index++;
 	}
+	index = 0;
 	
-	idx = 0;
-	
-	if (vectEdges.size() > 1){
-		while (idx < vectEdges.size()){
-			if (vectEdges.at(idx)->from == gn1 && vectEdges.at(idx)->to == gn2){
-				edgeExisting = true;
+	if (vectEdges.size() > 1){ // make sure the size of the vector is greater than one
+		while (index < vectEdges.size()){
+			if (vectEdges.at(index)->from == FromNode && vectEdges.at(index)->to == ToNode){
+				edgeFound = true;
 				break;
 			}
-			idx += 1;
+			index++;
 		}
 	}
 
 	if (vectEdges.size() == 1){
-		if (vectEdges.at(0)->from == gn1 && vectEdges.at(0)->to == gn2){
-			edgeExisting = true;
-		}
+		if (vectEdges.at(0)->from == FromNode && vectEdges.at(0)->to == ToNode) edgeFound = true; // the edge has been found in the vector of edges
 	}
 	
-	if (numNodePresent == 2 && !edgeExisting){	
+	if (numNodePresent == 2 && !edgeFound){	//if both the from and to Nodes are found and the edge does not exist yet
 		vectEdges.push_back(edge);
 		if (vectAdj.size() == 0){
 			vector<GraphEdge*> edgeVec;
@@ -124,14 +106,14 @@ GraphEdge *Graph::AddEdge(GraphNode *gn1, GraphNode *gn2, unsigned int weight){
 		else {
 			for (unsigned int i = 0; i < vectAdj.size(); i++){
 				cout << "in the forloop" << endl;
-				if (vectAdj.at(i).at(0)->from == gn1){
-					edgeExisting = true;
-					idx = i;
+				if (vectAdj.at(i).at(0)->from == FromNode){
+					edgeFound = true;
+					index = i;
 					break;
 				}
 			}
-			if (edgeExisting){
-				vectAdj.at(idx).push_back(edge);
+			if (edgeFound){
+				vectAdj.at(index).push_back(edge);
 			}
 			else {
 				vector<GraphEdge*> edgeVec;
@@ -144,7 +126,8 @@ GraphEdge *Graph::AddEdge(GraphNode *gn1, GraphNode *gn2, unsigned int weight){
 	} 
 	else {
 		delete edge;
-		throw invalid_argument("either edge already exists or one or both nodes don't exist");
+		if(edgeFound) throw invalid_argument("edge already exists in the Edge Vector");
+		if (numNodePresent < 2) throw invalid_argument("one or both nodes don't exist");
 	}
 }
 
@@ -172,8 +155,7 @@ string Graph::NodesToString() const{
 }
 
 /**
- * function that turns graph into string
- * @return string form of graph
+ * This function turns the graph into a string completely with new lines betwee
  */ 
 string Graph::ToString() const{
 	stringstream adjListStr;
@@ -196,7 +178,6 @@ string Graph::ToString() const{
 		}
 		adjListStr << "\n"; // add a new line at the end of each iteration
 	}
-	
 	return adjListStr.str();
 }
 
@@ -250,7 +231,6 @@ const vector<GraphNode*>& Graph::GetNodes() const{
  * This function returns the node at a given index
  */
 const GraphNode* Graph::NodeAt(unsigned int idx) const{
-	
 	return vectNodes.at(idx);		
 }
 
@@ -259,7 +239,6 @@ const GraphNode* Graph::NodeAt(unsigned int idx) const{
  */
 size_t Graph::Size() const{
 	size_t count = 0;
-	
 	for (unsigned int i = 0; i < vectAdj.size(); i++){
 		for (unsigned int p = 0; p < vectAdj.at(i).size(); p++){
 			count++;
