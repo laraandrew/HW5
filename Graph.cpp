@@ -74,17 +74,16 @@ GraphEdge *Graph::AddEdge(GraphNode *FromNode, GraphNode *ToNode, unsigned int w
 	int numNodePresent = 0;
 	bool edgeFound = false;
 	
-	
-	while (index < vectNodes.size()){
+	while (index < vectNodes.size()){ //this runs through the vector of nodes to find the desired nodes (make sure they exist)
 		if (vectNodes.at(index)->key == FromNode->key || vectNodes.at(index)->key == ToNode->key) numNodePresent++; 
 		if (numNodePresent == 2) break; // break once both nodes are found as expressed above
 		index++;
 	}
 	index = 0;
 	
-	if (vectEdges.size() > 1){ // make sure the size of the vector is greater than one
+	if (vectEdges.size() >= 1){ // make sure the size of the vector is greater than one
 		while (index < vectEdges.size()){
-			if (vectEdges.at(index)->from == FromNode && vectEdges.at(index)->to == ToNode){
+			if (vectEdges.at(index)->from == FromNode && vectEdges.at(index)->to == ToNode){ // running through vector to see if this edge already exists
 				edgeFound = true;
 				break;
 			}
@@ -92,34 +91,24 @@ GraphEdge *Graph::AddEdge(GraphNode *FromNode, GraphNode *ToNode, unsigned int w
 		}
 	}
 
-	if (vectEdges.size() == 1){
-		if (vectEdges.at(0)->from == FromNode && vectEdges.at(0)->to == ToNode) edgeFound = true; // the edge has been found in the vector of edges
-	}
-	
 	if (numNodePresent == 2 && !edgeFound){	//if both the from and to Nodes are found and the edge does not exist yet
 		vectEdges.push_back(edge);
 		if (vectAdj.size() == 0){
 			vector<GraphEdge*> edgeVec;
-			vectEdges.push_back(edge);
+			edgeVec.push_back(edge);
 			vectAdj.push_back(edgeVec);
 		}
 		else {
 			for (unsigned int i = 0; i < vectAdj.size(); i++){
-				cout << "in the forloop" << endl;
 				if (vectAdj.at(i).at(0)->from == FromNode){
-					edgeFound = true;
+					vectAdj.at(index).push_back(edge);
 					index = i;
 					break;
 				}
 			}
-			if (edgeFound){
-				vectAdj.at(index).push_back(edge);
-			}
-			else {
-				vector<GraphEdge*> edgeVec;
-				edgeVec.push_back(edge);
-				vectAdj.push_back(edgeVec);
-			}
+			vector<GraphEdge*> edgeVec;
+			edgeVec.push_back(edge);
+			vectAdj.push_back(edgeVec);
 		}
 		return edge;
 		delete edge;
@@ -129,6 +118,7 @@ GraphEdge *Graph::AddEdge(GraphNode *FromNode, GraphNode *ToNode, unsigned int w
 		if(edgeFound) throw invalid_argument("edge already exists in the Edge Vector");
 		if (numNodePresent < 2) throw invalid_argument("one or both nodes don't exist");
 	}
+	return edge;
 }
 
 /**
@@ -160,7 +150,7 @@ string Graph::ToString() const{
 				if (vectAdj.at(r).size() > 0){
 					for (unsigned int q = 0; q < vectAdj.at(r).size(); q++){
 						if (q == vectAdj.at(r).size() - 1){
-						adjVectStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "]";
+							adjVectStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "]";
 						}
 						else {
 							adjVectStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "], ";}
@@ -174,13 +164,12 @@ string Graph::ToString() const{
 }
 
 /**
- * function turns node into string given node
- * @param gn node being turned to string
- * @return string form of node
+ * This function is responsible for taking in a node and returning the key and data values of that node as such:
+ * (key:data)
  */ 
 string Graph::GraphNodeToString(const GraphNode *GraphN){
 	stringstream sstream;
-	sstream << GraphN->key;
+	sstream << GraphN->key; // turning char into string
 
 	return "(" + sstream.str() + ":" + to_string(GraphN->data) + ")";
 }
