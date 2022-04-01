@@ -1,43 +1,50 @@
 #include <iostream>
+#include <sstream>
+#include "Graph.h"
 
 using namespace std;
 
 // g++ -Wall BetterPriorityQueue.cpp -o bpq-tests
 // ./bpq-tests
 
+struct DNode {
+    int pri = INT_MAX;
+    bool visited = false;
+    const GraphNode *node = nullptr;
+    bool operator<(const DNode &other) const {
+        return pri < other.pri;
+    }
+    bool operator>(const DNode &other) const {
+        return pri > other.pri;
+    }
+    bool operator==(const DNode &other) const {
+        return node == other.node;
+    }
+};
+
 class BetterPriorityQueue{
+    private: 
+        vector<DNode> c;
     
     /**
-     * function chekcs to see if node is in queue
-     * @param n node being checked
-     * @return true if it exists and flase if it doesnt
+     * This function is responsible for checking if the Dnode parameter is present within the queue
      */
     bool Contains(DNode n){
-        bool containsNode = false;
-            
-        if (c.size() == 0){
-            return false;
-        }
+        if (c.size() == 0) return false;
             
         for (unsigned int i = 0; i < c.size(); i++){
-            if (c.at(i).node == n.node){
-                containsNode = true;
-                break;
-            }
+            if (c.at(i).node == n.node) return true;
         }
-        
-        return containsNode;
+        return false;
     }
 
     /**
-     * function updates the priority value of give node
-     * @param n node being updated
-     * @return true if it was updated and false if it wasn't
+     * This function is responsible for updating the queue with the given node
+     * if the queue was updated, it will return true and false otherwise
      */
     bool Update(DNode n){
         bool updated = true;
         vector<DNode> updatedC;
-            
         for (unsigned int i = 0; i < c.size(); i++){
             if (c.at(i) == n){
                 if (c.at(i).pri <= n.pri){
@@ -48,7 +55,6 @@ class BetterPriorityQueue{
                 }
             }
         }
-        
         updatedC = c;
         c.erase(c.begin(), c.end());
         
@@ -64,31 +70,28 @@ class BetterPriorityQueue{
      * @return string form of queue
      */
     string ToString(){
-        string bpqStr = "[";
-        
+        stringstream bpqStr;
+
         for (unsigned int i = 0; i < c.size(); i++){
-            if (i < c.size()-1){
-                bpqStr = bpqStr + DnodeToString(c.at(i)) + ", ";
+            if (i < c.size() - 1){
+                bpqStr << DnodeToString(c.at(i)) << ", ";
             }
             else {
-                bpqStr = bpqStr + DnodeToString(c.at(i)) + "]";
+                bpqStr << DnodeToString(c.at(i)) << "]";
             }
         }
         
-        return bpqStr;
+        return "[" + bpqStr.str() + "]";
     }
 
     /**
-     * function turns node into string
-     * @param node bing turned to string
-     * @return string form of a node
+     * This function takes in a Dnode and returns it in a string form:
+     * (key : pri)
      */
     string DnodeToString(DNode n){
-        string dNodeStr = "(";
-        
-        dNodeStr = dNodeStr + n.node->key + ": " + to_string(n.pri) + ")";
-        
-        return dNodeStr;
+        stringstream ss;
+        ss << n.node->key;
+        return "(" + ss.str() + " : " + to_string(n.pri) + ")";
     }
 
 };
