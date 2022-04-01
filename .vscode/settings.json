@@ -4,6 +4,7 @@
         "*.tcc": "cpp",
         "memory_resource": "cpp",
         "type_traits": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "iosfwd": "cpp"
     }
 }

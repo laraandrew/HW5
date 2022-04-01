@@ -1,4 +1,4 @@
-#include "TemplateGraph.h"
+#include "Graph.h"
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -176,29 +176,28 @@ string Graph::NodesToString() const{
  * @return string form of graph
  */ 
 string Graph::ToString() const{
-	string adjListStr = "";
-	string specialChar = "\n";
+	stringstream adjListStr;
 	
-	for (unsigned int j = 0; j < vectNodes.size(); j++){
-		adjListStr = adjListStr + vectNodes.at(j)->key + " | ";
-		for (unsigned int i = 0; i < vectAdj.size(); i++){
-			if (vectNodes.at(j)->key == vectAdj.at(i).at(0)->from->key){
-				if (vectAdj.at(i).size() > 0){
-					for (unsigned int k = 0; k < vectAdj.at(i).size(); k++){
-						if (k == vectAdj.at(i).size() - 1){
-						adjListStr = adjListStr + "[(" + (vectAdj.at(i).at(k)->from->key) + ":" + to_string(vectAdj.at(i).at(k)->from->data) + ")" + "->(" + vectAdj.at(i).at(k)->to->key + ":" + to_string(vectAdj.at(i).at(k)->to->data) + ") w:" + to_string(vectAdj.at(i).at(k)->weight) + "]";
+	for (unsigned int p = 0; p < vectNodes.size(); p++){
+		adjListStr << vectNodes.at(p)->key << " | ";
+		for (unsigned int r = 0; r < vectAdj.size(); r++){
+			if (vectNodes.at(p)->key == vectAdj.at(r).at(0)->from->key){
+				if (vectAdj.at(r).size() > 0){
+					for (unsigned int q = 0; q < vectAdj.at(r).size(); q++){
+						if (q == vectAdj.at(r).size() - 1){
+						adjListStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "]";
 						}
 						else {						
-							adjListStr = adjListStr + "[(" + (vectAdj.at(i).at(k)->from->key) + ":" + to_string(vectAdj.at(i).at(k)->from->data) + ")" + "->(" + vectAdj.at(i).at(k)->to->key + ":" + to_string(vectAdj.at(i).at(k)->to->data) + ") w:" + to_string(vectAdj.at(i).at(k)->weight) + "], ";
+							adjListStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "], ";
 						}
 					}
 				}
 			}
 		}
-		adjListStr.append(specialChar);
+		adjListStr << "\n"; // add a new line at the end of each iteration
 	}
 	
-	return adjListStr;
+	return adjListStr.str();
 }
 
 /**
@@ -206,40 +205,31 @@ string Graph::ToString() const{
  * @param gn node being turned to string
  * @return string form of node
  */ 
-string Graph::GraphNodeToString(const GraphNode *gn){
-	stringstream stream;
-	stream << gn->key;
-	string key = stream.str();
-	
-	string nodeStr = "(" + key + ":" + to_string(gn->data) + ")";
+string Graph::GraphNodeToString(const GraphNode *GraphN){
+	stringstream sstream;
+	sstream << GraphN->key;
 
-	return nodeStr;
+	return "(" + sstream.str() + ":" + to_string(GraphN->data) + ")";
 }
 
 /**
- * function turns edge into string given edge
- * @param ge edge being turned to string
- * @return string form of edge
+ * This function takes in a graphEdge and turns its nodes into a string
  */ 
-string Graph::GraphEdgeToString(const GraphEdge *ge){
+string Graph::GraphEdgeToString(const GraphEdge *GraphN){
 	stringstream stream;
-	stream << ge->from->key;
+	stream << GraphN->from->key;
 	string keyFrom = stream.str();
+	stream.clear();
+	stream << GraphN->to->key; // will be used in return call
 	
-	stringstream stream1;
-	stream << ge->to->key;
-	string keyTo = stream.str();
-	
-	string edgeStr = "(" + keyFrom + ":" + to_string(ge->from->data) + ")" + "->(" + keyTo + ":" + to_string(ge->to->data) + ") w:" + to_string(ge->weight) + "]";
-
-	return edgeStr;
+	return "[(" + keyFrom + ":" + to_string(GraphN->from->data) + ")" + "->(" + stream.str() + ":" + to_string(GraphN->to->data) + ") w:" + to_string(GraphN->weight) + "]";
 }
 
 /**
  * THis function uses the size of the vector of Adj to find and return the vector node
  */
-const vector<GraphEdge*>& Graph::GetEdges(const GraphNode *graphN) const{
-	const vector<GraphEdge*> &emptyVec;
+const vector<GraphEdge*> &Graph::GetEdges(const GraphNode *graphN) const{
+	const vector<GraphEdge*> &emptyVec = {};
 	
 	for (unsigned int i = 0; i < vectAdj.size(); i++){
 		if (vectAdj.at(i).at(0)->from->key == graphN->key){
@@ -271,7 +261,7 @@ size_t Graph::Size() const{
 	size_t count = 0;
 	
 	for (unsigned int i = 0; i < vectAdj.size(); i++){
-		for (unsigned int j = 0; j < vectAdj.at(i).size(); j++){
+		for (unsigned int p = 0; p < vectAdj.at(i).size(); p++){
 			count++;
 		}
 	}
@@ -283,7 +273,7 @@ size_t Graph::Size() const{
  */
 size_t Graph::Order() const{
 	
-	return vectNodes.size();
+	return vectNodes.size(); // num of nodes
 }
-	 // the number of nodes
+	 
 
