@@ -2,7 +2,8 @@
 
 using namespace std;
 
-
+// g++ -Wall BetterPriorityQueue.cpp -o bpq-tests
+// ./bpq-tests
 
 class BetterPriorityQueue{
     

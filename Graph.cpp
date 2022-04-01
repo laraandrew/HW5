@@ -132,53 +132,45 @@ GraphEdge *Graph::AddEdge(GraphNode *FromNode, GraphNode *ToNode, unsigned int w
 }
 
 /**
- * function that turns nodes in graph to string
- * @return string form of nodes
+ * This function is responsible for turning the Vector of Nodes into a string
+ * expresses as such: [(key:data), (key:data) ...]
  */ 	
 string Graph::NodesToString() const{
-	string nodeStr = "[";
-	bool first = true;
-	GraphNode* node;
-	for (unsigned int i = 0; i < vectNodes.size(); i++){
-		if (first){
-			nodeStr = nodeStr + "(" + node->key + ":" + to_string(node->data) + ")";
-			first = false;
-		}
-		else { 
-			nodeStr = nodeStr + ", " + "(" + node->key + ":" + to_string(node->data) + ")";
-		}
+	stringstream nodeStream;
+	nodeStream << "[";
+	GraphNode* node = vectNodes.at(0);
+	nodeStream << "(" << node->key << ":" << to_string(node->data) << ")";
+	for (unsigned int i = 1; i < vectNodes.size(); i++){
+		node = vectNodes.at(i);
+		nodeStream << ", (" << node->key << ":" << to_string(node->data) << ")";
 	}
-	
-	nodeStr = nodeStr + "]";
-	
-	return nodeStr;
+	return nodeStream.str() + "]";
 }
 
 /**
- * This function turns the graph into a string completely with new lines betwee
+ * This function turns the graph into a string completely with new lines 
  */ 
 string Graph::ToString() const{
-	stringstream adjListStr;
+	stringstream adjVectStr;
 	
 	for (unsigned int p = 0; p < vectNodes.size(); p++){
-		adjListStr << vectNodes.at(p)->key << " | ";
+		adjVectStr << vectNodes.at(p)->key << " | ";
 		for (unsigned int r = 0; r < vectAdj.size(); r++){
 			if (vectNodes.at(p)->key == vectAdj.at(r).at(0)->from->key){
 				if (vectAdj.at(r).size() > 0){
 					for (unsigned int q = 0; q < vectAdj.at(r).size(); q++){
 						if (q == vectAdj.at(r).size() - 1){
-						adjListStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "]";
+						adjVectStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "]";
 						}
-						else {						
-							adjListStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "], ";
-						}
+						else {
+							adjVectStr << "[(" << (vectAdj.at(r).at(q)->from->key) << ":" << to_string(vectAdj.at(r).at(q)->from->data) << ")->(" << vectAdj.at(r).at(q)->to->key << ":" << to_string(vectAdj.at(r).at(q)->to->data) << ") w:" << to_string(vectAdj.at(r).at(q)->weight) << "], ";}
 					}
 				}
 			}
 		}
-		adjListStr << "\n"; // add a new line at the end of each iteration
+		adjVectStr << "\n"; // add a new line at the end of each iteration
 	}
-	return adjListStr.str();
+	return adjVectStr.str();
 }
 
 /**
