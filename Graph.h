@@ -10,16 +10,13 @@ struct GraphNode {
 	int data; // Not necessary or used for Dijkstra algorithm
 };
 
-
 struct GraphEdge {
 	GraphNode *from;
 	GraphNode *to;
 	unsigned int weight;
 };
 
-
 class Graph{
-	
 	public:
 		~Graph();
 	

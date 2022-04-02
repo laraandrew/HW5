@@ -7,8 +7,6 @@
 
 using namespace std;
 
-
-
 int dijkstra(const GraphNode *start, const GraphNode *end, Graph *g){
 	vector<GraphNode*> vectNode;
 	BetterPriorityQueue MinHeap;
