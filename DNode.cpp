@@ -2,7 +2,7 @@
 #include <iostream>
 
 struct DNode {
-    int pri = INT_MAX;
+    int pri = INT8_MAX;
     bool visited = false;
     const GraphNode *node = nullptr;
     bool operator<(const DNode &other) const {

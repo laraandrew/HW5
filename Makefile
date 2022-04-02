@@ -1,6 +1,7 @@
 all:
-	g++ -Wall BetterPriorityQueue.cpp -o bpq-tests
+	g++ -Wall Graph.cpp -o graph-tests
+
 run: 
-	./bpq-tests
+	./graph-tests
 	
 try: all run

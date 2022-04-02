@@ -194,7 +194,7 @@ string Graph::GraphEdgeToString(const GraphEdge *GraphN){
  * THis function uses the size of the vector of Adj to find and return the vector node
  */
 const vector<GraphEdge*> &Graph::GetEdges(const GraphNode *graphN) const{
-	const vector<GraphEdge*> emptyVec; // gonna need to add & sign to make it reference vector
+	const vector<GraphEdge*> &emptyVec  = {};
 	
 	for (unsigned int i = 0; i < vectAdj.size(); i++){
 		if (vectAdj.at(i).at(0)->from->key == graphN->key) return vectAdj.at(i);
