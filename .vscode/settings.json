@@ -8,6 +8,7 @@
         "iosfwd": "cpp",
         "sstream": "cpp",
         "functional": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "new": "cpp"
     }
 }

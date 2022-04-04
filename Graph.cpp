@@ -14,17 +14,14 @@ using namespace std;
  * Deconstructor function responsible for memory leaks when exiting the program
  */
 Graph::~Graph(){
-
 	for (unsigned int i = 0; i < vectNodes.size(); i++){
 		delete &vectNodes.at(i);
 		vectNodes.erase(vectNodes.begin() + i);
 	}
-	
 	for (unsigned int i = 0; i < vectEdges.size(); i++){
 		delete &vectEdges.at(i);
 		vectEdges.erase(vectEdges.begin() + i);
 	}
-	
 }
 
 /**
@@ -38,27 +35,20 @@ GraphNode *Graph::AddNode(char key, int data){
 
 	bool keyInUse = false;
 	unsigned int index = 0;
+	if (vectNodes.size() == 0) vectNodes.push_back(node);
 	
-	
-	if (vectNodes.size() > 0){
-		if (vectNodes.size() == 1 && vectNodes.at(0)->key == key) keyInUse = true; // if the key is found in the 
-		else {
-			while (index < vectNodes.size()){ // iterate through the node Vector to see if the key is already in use
-				if (vectNodes.at(index)->key == key){
-					keyInUse = true;
-					break;
-				}
-				index++;
-			}
+	while (index < vectNodes.size()){ // iterate through the node Vector to see if the key is already in use
+		if (vectNodes.at(index)->key == key){
+			keyInUse = true;
+			break;
 		}
-		if (!keyInUse) vectNodes.push_back(node);
-		else {
-			delete node;
-			throw invalid_argument("Key is in use");
-		}
+		index++;
 	}
-	else vectNodes.push_back(node); //pushes node into the node vector if its an empty vector
-	
+	if (!keyInUse) vectNodes.push_back(node);
+	else{
+		delete node;
+		throw invalid_argument("Key is in use");
+	}
 	return node;
 	delete node;
 }
@@ -74,11 +64,11 @@ GraphEdge *Graph::AddEdge(GraphNode *FromNode, GraphNode *ToNode, unsigned int w
 	//edge is now declared and initialized
 
 	unsigned int index = 0;
-	int numNodePresent = 0;
 	bool edgeFound = false;
+	int numNodePresent = 0;
 	
 	while (index < vectNodes.size()){ //this runs through the vector of nodes to find the desired nodes (make sure they exist)
-		if (vectNodes.at(index)->key == FromNode->key || vectNodes.at(index)->key == ToNode->key) numNodePresent++; 
+		if (vectNodes.at(index)->key == FromNode->key || vectNodes.at(index)->key == ToNode->key) numNodePresent++;
 		if (numNodePresent == 2) break; // break once both nodes are found as expressed above
 		index++;
 	}
@@ -194,12 +184,11 @@ string Graph::GraphEdgeToString(const GraphEdge *GraphN){
  * THis function uses the size of the vector of Adj to find and return the vector node
  */
 const vector<GraphEdge*> &Graph::GetEdges(const GraphNode *graphN) const{
-	const vector<GraphEdge*> &emptyVec  = {};
-	
+	const vector<GraphEdge*> emptyVec;
 	for (unsigned int i = 0; i < vectAdj.size(); i++){
 		if (vectAdj.at(i).at(0)->from->key == graphN->key) return vectAdj.at(i);
 	}
-	return emptyVec;
+	return emptyVec;// fix needed on line 197
 }
 
 /**
